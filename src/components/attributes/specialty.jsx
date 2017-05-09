@@ -7,11 +7,18 @@ import update from 'immutability-helper';
 import map from 'lodash/map';
 import every from 'lodash/every';
 import findIndex from 'lodash/findIndex';
+import flatMap from 'lodash/flatMap';
+import get from 'lodash/get';
 
 export default class SpecialtyAttribute extends React.Component {
 	constructor(props){
 		super(props)
-		this.state = {}
+		this.state = {
+			showDropdown: false,
+			selectedItemPreview: '',
+			searchText: '',
+			searchRegex: null
+		}
 
 		this.toggleCategory = this.toggleCategory.bind(this)
 		this.toggleSpecialty = this.toggleSpecialty.bind(this)
@@ -24,7 +31,6 @@ export default class SpecialtyAttribute extends React.Component {
 					return {
 						_id: specialty._id,
 						label: specialty.strings.label,
-
 					}
 				});
 				return {
@@ -41,6 +47,21 @@ export default class SpecialtyAttribute extends React.Component {
 		}).catch(err => {
 			console.error('Error retrieving specialties', err)
 		});
+	}
+	componentWillReceiveProps(nextProps){
+		const categories = get(nextProps, 'data.categories')
+		if (categories){
+			// generate preview, not completey sure what the functionality is here
+			const preview = flatMap(nextProps.data.categories, c => c.specialties)
+				.filter(s => s.selected)
+				.slice(0, 4)
+				.map(s => s.label)
+				.join(', ')
+
+			this.setState({
+				selectedItemPreview: preview
+			})
+		}
 	}
 	
 	toggleCategory(categoryid){
@@ -145,15 +166,18 @@ export default class SpecialtyAttribute extends React.Component {
 	}
 	render(){
 		const props = this.props
-		// const state = this.state
+		const state = this.state
 
 		return (
-			<div>
+			<div className="specialty-attribute">
 				<span className="attribute-title">
 					Specialty
 					<button className="attribute-remove" onClick={() => props.remove(props.id)}>[X]</button>
 				</span>
-				{props.data.categories
+				<div className="specialty-attribute__display" onClick={() => this.setState({showDropdown: true})}>
+					{state.selectedItemPreview} &nbsp;
+				</div>
+				{state.showDropdown && props.data.categories
 					?
 					this.mapCategories()
 					:

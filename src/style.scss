@@ -21,6 +21,24 @@ body {
 	float: right;
 }
 
+
+.specialty-attribute {
+	margin: 10px 0;
+	padding: 1em 14px 2em;
+	width: 400px;
+	border: 1px solid #f4f4f4;
+	&__display {
+		padding: 14px 0;
+		width: 280px;
+		border-bottom: 1px solid #DDD;
+		cursor: pointer;
+		font-size: 13px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+}
+
 .category-group {
 	margin-top: 8px;
 	&__item {

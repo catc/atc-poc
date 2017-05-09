@@ -4,7 +4,8 @@ import { getSpecialties } from 'utils/api';
 import Checkbox from 'components/checkbox';
 import update from 'immutability-helper';
 
-import map from 'lodash/fp/map';
+import map from 'lodash/map';
+import every from 'lodash/every';
 import findIndex from 'lodash/findIndex';
 
 export default class SpecialtyAttribute extends React.Component {
@@ -18,20 +19,20 @@ export default class SpecialtyAttribute extends React.Component {
 		// fetch data
 		getSpecialties().then(data => {
 			// copy specialties to new object
-			const categories = map(category => {
-				const specialties = map(specialty => {
+			const categories = map(data, category => {
+				const specialties = map(category.specialties, specialty => {
 					return {
 						_id: specialty._id,
 						label: specialty.strings.label,
 
 					}
-				})(category.specialties);
+				});
 				return {
 					label: category.strings.label,
 					_id: category._id,
 					specialties
 				}
-			})(data)
+			})
 
 			// set on parent
 			this.props.updateData(this.props.id, {
@@ -43,7 +44,38 @@ export default class SpecialtyAttribute extends React.Component {
 	}
 	
 	toggleCategory(categoryid){
+		const props = this.props
+		const categoryIndex = findIndex(props.data.categories, c => c._id === categoryid)
+		const specialties = props.data.categories[categoryIndex].specialties
+		
+		let changes;
+		if (every(specialties, s => s.selected)){
+			changes = {
+				selected: {$set: false},
+				specialties: {$set: setAll(specialties, false)}
+			}
+		} else {
+			changes = {
+				selected: {$set: true},
+				specialties: {$set: setAll(specialties, true)}
+			}
+		}
 
+		const updatedData = update(props.data, {
+			categories: {
+				[categoryIndex]: changes
+			}
+		})
+		
+		// update data on parent
+		props.updateData(props.id, updatedData)
+
+		function setAll(specialties, val){
+			return specialties.map(s => {
+				s.selected = val
+				return s
+			})
+		}
 	}
 	toggleSpecialty(specialty, categoryid){
 		const props = this.props;
@@ -52,17 +84,30 @@ export default class SpecialtyAttribute extends React.Component {
 		const categoryIndex = findIndex(props.data.categories, c => c._id === categoryid)
 		const specialtyIndex = findIndex(props.data.categories[categoryIndex].specialties, s => s._id === specialty._id)
 
-		const updatedSpecialty = Object.assign({}, specialty, {selected: !specialty.selected})
+		// const updatedSpecialty = Object.assign({}, specialty, {selected: !specialty.selected})
+		const updatedSpecialties = update(props.data.categories[categoryIndex].specialties, {
+			[specialtyIndex]: {
+				selected: {$set: !specialty.selected}
+			}
+		})
+
+		// update selected/unselected parent checkbox
+		let parentSelected;
+		if (every(updatedSpecialties, s => s.selected)){
+			parentSelected = true
+		} else {
+			parentSelected = false
+		}
+
 		const updatedData = update(props.data, {
 			categories: {
 				[categoryIndex]: {
-					specialties: {
-						[specialtyIndex]: {$set: updatedSpecialty}
-					}
+					selected: {$set: parentSelected},
+					specialties: {$set: updatedSpecialties}
 				}
 			}
 		})
-		
+
 		// update data on parent
 		props.updateData(props.id, updatedData)
 	}

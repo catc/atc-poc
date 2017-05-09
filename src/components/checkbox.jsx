@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Checkbox = ({id, className, selected, onChange}) => (
+	// TODO - style checkbox via label
 	<div className={`checkbox ${className}`}>
 		<input
 			id={id}

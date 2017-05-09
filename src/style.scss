@@ -1,0 +1,50 @@
+body {
+	// background: #f4f4f4;
+	font-family: 'Tahoma', 'Helvetica Neue', sans-serif;
+	color: #455A64;
+}
+
+.show-attributes-select {
+	color: #03a9f4;
+}
+
+.attributes-wrapper {
+	padding: 1em 0;
+	margin-bottom: 1.5em;
+}
+
+.attribute-title {
+	display: block;
+	font-weight: bold;
+}
+.attribute-remove {
+	float: right;
+}
+
+.category-group {
+	margin-top: 8px;
+	&__item {
+		cursor: pointer;
+		margin-bottom: 4px;
+		display: block;
+	}
+	&__label {
+		margin-left: 4px;
+		display: inline-block;
+	}
+	&__sub-items {
+		padding-left: 2em;
+	}
+}
+.specialty-item {
+	cursor: pointer;
+	&__label {
+		display: inline-block;
+		margin-left: 4px;
+		font-size: 13px;
+	}
+}
+
+.checkbox {
+	display: inline-block;
+}

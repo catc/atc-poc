@@ -27,8 +27,8 @@ body {
 	padding: 1em 14px 2em;
 	width: 400px;
 	border: 1px solid #f4f4f4;
-	&__display {
-		padding: 14px 0;
+	&__preview {
+		padding: 10px 0;
 		width: 280px;
 		border-bottom: 1px solid #DDD;
 		cursor: pointer;
@@ -36,6 +36,26 @@ body {
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+		padding-right: 24px;
+		position: relative;
+		&:after {
+			// triangle
+			content: "";
+			display: inline-block;
+			border: 5px solid transparent;
+			border-top: 8px solid #d1d1d1;
+			position: absolute;
+			right: 2px;
+			bottom: 9px;
+		}
+	}
+	&__options-popup {
+		background: white;
+		padding: 1em;
+		max-height: 400px;
+		box-shadow: 0 2px 3px 1px rgba(0,0,0,0.15);
+		overflow-y: auto;
+		margin-top: 10px;
 	}
 }
 
@@ -65,4 +85,16 @@ body {
 
 .checkbox {
 	display: inline-block;
+}
+
+.popup {
+	position: absolute;
+	z-index: 5;
+
+	&.anim_fade {
+		animation: 0.2s ease fadeIn;
+	}
+	&.anim_grow-fade {
+		animation: 0.15s ease fadeInGrow both;
+	}
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { getSpecialties } from 'utils/api';
 import Checkbox from 'components/checkbox';
+import Popup from 'components/pop-up';
 import update from 'immutability-helper';
 
 import map from 'lodash/map';
@@ -174,12 +175,19 @@ export default class SpecialtyAttribute extends React.Component {
 					Specialty
 					<button className="attribute-remove" onClick={() => props.remove(props.id)}>[X]</button>
 				</span>
-				<div className="specialty-attribute__display" onClick={() => this.setState({showDropdown: true})}>
+				<div className="specialty-attribute__preview" onClick={() => this.setState({showDropdown: true})}>
 					{state.selectedItemPreview} &nbsp;
 				</div>
-				{state.showDropdown && props.data.categories
+
+				{props.data.categories
 					?
-					this.mapCategories()
+					<Popup
+						visible={state.showDropdown}
+						closeFn={() => this.setState({showDropdown: false})}
+						className="anim_fade specialty-attribute__options-popup"
+					>
+						{this.mapCategories()}
+					</Popup>
 					:
 					false
 				}

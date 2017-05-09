@@ -10,6 +10,7 @@ import every from 'lodash/every';
 import findIndex from 'lodash/findIndex';
 import flatMap from 'lodash/flatMap';
 import get from 'lodash/get';
+import debounce from 'lodash/debounce';
 
 export default class SpecialtyAttribute extends React.Component {
 	constructor(props){
@@ -18,7 +19,7 @@ export default class SpecialtyAttribute extends React.Component {
 			showDropdown: false,
 			selectedItemPreview: '',
 			searchText: '',
-			searchRegex: null
+			searchRegex: new RegExp('')
 		}
 
 		this.toggleCategory = this.toggleCategory.bind(this)
@@ -48,6 +49,8 @@ export default class SpecialtyAttribute extends React.Component {
 		}).catch(err => {
 			console.error('Error retrieving specialties', err)
 		});
+
+		this.updateSearch = debounce(this.updateSearch.bind(this), 200)
 	}
 	componentWillReceiveProps(nextProps){
 		const categories = get(nextProps, 'data.categories')
@@ -63,6 +66,18 @@ export default class SpecialtyAttribute extends React.Component {
 				selectedItemPreview: preview
 			})
 		}
+	}
+
+	updateSearch(val){
+		/*
+			NOTE: would probably be easier to do searches by flattening all
+			specialties into 1 giant array and filtering that way
+			- specialties would need to have a reference to their parent category
+		*/
+		const regex = new RegExp(val, 'i')
+		this.setState({
+			searchRegex: regex
+		})
 	}
 	
 	toggleCategory(categoryid){
@@ -153,7 +168,8 @@ export default class SpecialtyAttribute extends React.Component {
 		})
 	}
 	mapSpecialties(specialties, categoryid){
-		return specialties.map(specialty => {
+		const regex = this.state.searchRegex
+		return specialties.filter(s => regex.test(s.label)).map(specialty => {
 			return (
 				<div key={specialty._id} className="specialty-item" onClick={() => this.toggleSpecialty(specialty, categoryid)}>
 					<Checkbox
@@ -175,7 +191,7 @@ export default class SpecialtyAttribute extends React.Component {
 					Specialty
 					<button className="attribute-remove" onClick={() => props.remove(props.id)}>[X]</button>
 				</span>
-				<div className="specialty-attribute__preview" onClick={() => this.setState({showDropdown: true})}>
+				<div className="specialty-attribute__preview" onClick={() => this.setState({showDropdown: true, searchRegex: new RegExp('')})}>
 					{state.selectedItemPreview} &nbsp;
 				</div>
 
@@ -186,7 +202,17 @@ export default class SpecialtyAttribute extends React.Component {
 						closeFn={() => this.setState({showDropdown: false})}
 						className="anim_fade specialty-attribute__options-popup"
 					>
-						{this.mapCategories()}
+						<div className="specialty-attribute__search">
+							<input
+								type="text"
+								placeholder="Search specialties"
+								onChange={e => this.updateSearch(e.target.value)}
+								defaultValue={state.searchText}
+							/>
+						</div>
+						<div className="specialty-attribute__categories-wrapper">
+							{this.mapCategories()}
+						</div>
 					</Popup>
 					:
 					false

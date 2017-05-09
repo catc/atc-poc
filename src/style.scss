@@ -3,6 +3,16 @@ body {
 	font-family: 'Tahoma', 'Helvetica Neue', sans-serif;
 	color: #455A64;
 }
+* {
+	box-sizing: border-box;
+}
+input {
+	&:focus {
+		outline: none;
+	}
+}
+
+// ----------
 
 .show-attributes-select {
 	color: #03a9f4;
@@ -52,10 +62,19 @@ body {
 	&__options-popup {
 		background: white;
 		padding: 1em;
-		max-height: 400px;
 		box-shadow: 0 2px 3px 1px rgba(0,0,0,0.15);
-		overflow-y: auto;
 		margin-top: 10px;
+	}
+	&__search {
+		input {
+			width: 100%;
+			padding: 6px 12px;
+		}
+	}
+	&__categories-wrapper {
+		margin-top: 1em;
+		max-height: 400px;
+		overflow-y: auto;
 	}
 }
 

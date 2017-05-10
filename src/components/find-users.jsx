@@ -28,7 +28,7 @@ export default class FindUsers extends React.Component {
 			showAttributes: true,
 			addedAttributes: [],
 			// addedAttributes: [{id: 'zz', component: SpecialtyAttribute, data: {}}] // FOR TESTING
-			addedAttributes: [{id: 'aa', component: CountryAttribute, data: {}}, {id: 'zz', component: SpecialtyAttribute, data: {}}, {id: 'yy', component: CountryAttribute, data: {}}, {id: 'xx', component: CountryAttribute, data: {}}] // FOR TESTING
+			// addedAttributes: [{id: 'aa', component: CountryAttribute, data: {}}, {id: 'zz', component: SpecialtyAttribute, data: {}}, {id: 'yy', component: CountryAttribute, data: {}}, {id: 'xx', component: CountryAttribute, data: {}}] // FOR TESTING
 		}
 
 		this.updateAttributeData = this.updateAttributeData.bind(this)
@@ -59,7 +59,12 @@ export default class FindUsers extends React.Component {
 		})
 		this.setState({
 			addedAttributes: updated
-		})
+		}, this.doSomethingElse)
+	}
+	doSomethingElse(){
+		// NOTE: can add additional updates here, ie: serialize + save on server + update count
+		const state = this.state
+		console.log( 'the new state is', state )
 	}
 	removeAttribute(id){
 		const index = findIndex(this.state.addedAttributes, a => a.id === id)
@@ -75,7 +80,6 @@ export default class FindUsers extends React.Component {
 	}
 	render(){
 		const state = this.state
-
 		return (
 			<div>
 				<h1>Featured cases for Cardiac Surgeons</h1>

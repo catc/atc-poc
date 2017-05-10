@@ -1,4 +1,4 @@
-const BEARER_TOKEN = 'Bearer ad262d8cc988f2455dd58079d93ca3514fb55844452940780019a5c22c3ff620';
+const BEARER_TOKEN = 'Bearer a788e867c3cb3bda083168108a85e59142eb07b4d333e214c7bd89515577694b';
 
 export default function(opts = {}){
 	return new Promise((resolve, reject) => {
